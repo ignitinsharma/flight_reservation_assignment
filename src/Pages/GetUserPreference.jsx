@@ -18,18 +18,12 @@ const GetUserPreference = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    /* Making input box empty */
-    setFormData({
-      source: "",
-      destination: "",
-      seats: "",
-    });
     navigate("/flights");
   };
   return (
     <>
       <Navbar />
-      <div className="flex justify-center items-center mt-[3rem] pb-[2rem] md:mt-[5rem] bg-gray-100 ">
+      <div className="flex justify-center items-center mt-[3rem] pb-[2rem] md:mt-[5rem] bg-white ">
         <div className="bg-white rounded-lg p-8 shadow-md">
           <h1 className="text-2xl font-bold mb-6">Enter Your Trip Details</h1>
           <form onSubmit={handleSubmit} className="space-y-4">

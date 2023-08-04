@@ -10,6 +10,7 @@ import { useFlightContext } from "../Context/AppContext.jsx";
 const FlightPage = () => {
   // Main screen input Data grabbing from Context
   const { formData } = useFlightContext();
+  console.log("formData:", formData.seats);
   const [flights, setFlights] = useState([]);
   const [filteredFlights, setFilteredFlights] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 9000]);
@@ -117,18 +118,22 @@ const FlightPage = () => {
 
   const isSeatsMatched = (seats, seatsAvailable) => {
     // If formData.seats is empty, consider it as a match for all flights
-    if (seats === "") {
-      return true;
-    }
-    console.log(seats === seatsAvailable, "ismatch");
-    return seats === seatsAvailable;
+    if (seats == "") return true;
+    else if (seats == seatsAvailable) return true;
+    else return false;
   };
+
+  // Checking if there are flights that are matching in with the selected number of seats
+  const areFlightsAvailable = filteredFlights.some((flight) =>
+    isSeatsMatched(formData.seats, flight.SeatsAvailable)
+  );
 
   return (
     <>
       <Navbar />
       <div className="p-4 mt-[1.5rem]">
-        <div className="w-[95%] m-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
+        <div className="w-[95%] m-auto">
+          {/* <div className="w-[95%] m-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 "> */}
           <Link to={"/"}>
             <button className="flex items-center px-4 py-2 bg-[#1989C8] text-white rounded-md">
               <BiArrowBack
@@ -140,7 +145,7 @@ const FlightPage = () => {
             </button>
           </Link>
           {/* Filters */}
-          <div className="col-span-full mb-4">
+          <div className="col-span-full mb-4 mt-[1rem]">
             {/* Price Range Slider */}
             <div className="mb-4">
               <div className="text-lg font-bold mb-2">Price Range</div>
@@ -247,14 +252,13 @@ const FlightPage = () => {
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Flight Cards */}
-
-          {filteredFlights.length > 0 &&
+        {/* Flight Cards */}
+        <div className="w-[95%] m-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
+          {areFlightsAvailable ? (
             filteredFlights.map((flight, index) =>
-              // isSeatsMatched(formData.seats, flight.SeatsAvailable)
-              formData.seats !== flight.seatsAvailable ? (
-                // Check if formData.seats matches with SeatsAvailable for this flight
+              isSeatsMatched(formData.seats, flight.SeatsAvailable) ? (
                 <div
                   key={index}
                   className="bg-white rounded-lg p-4 shadow-md hover:shadow-custom-hover hover:transition ease-in-out duration-300"
@@ -283,17 +287,12 @@ const FlightPage = () => {
                   </div>
                 </div>
               ) : null
-            )}
-
-          {filteredFlights.length > 0 &&
-            formData.seats !== "" &&
-            filteredFlights.every(
-              (flight) => !isSeatsMatched(formData.seats, flight.SeatsAvailable)
-            ) && (
-              <h1 className="text-center text-red-500 font-bold">
-                No flights available with the selected number of seats.
-              </h1>
-            )}
+            )
+          ) : (
+            <h1 className="text-center text-red-500 font-bold">
+              No flights available with the selected number of seats.
+            </h1>
+          )}
         </div>
       </div>
     </>
